@@ -4,6 +4,7 @@ export class BornePrivee extends Borne {
     constructor(latitude, longitude, proprietaire) {
         super(latitude, longitude);
         this.proprietaire = proprietaire;
+        this.type = 'Privée';
     }
 
     toHTMLMarker() {
@@ -20,7 +21,7 @@ export class BornePrivee extends Borne {
         const infosParagraph = document.createElement('p');
         // Use pre-wrap to allow line breaks
         infosParagraph.style.whiteSpace = 'pre-wrap';
-        infosParagraph.textContent = `Coordonées: ${this.latitude}, ${this.longitude}\nType: Privée\nPropriétaire: ${this.proprietaire}`;
+        infosParagraph.textContent = `Coordonées: ${this.latitude}, ${this.longitude}\nType: ${this.type}\nPropriétaire: ${this.proprietaire}`;
         div.appendChild(infosParagraph);
         // Button
         const button = document.createElement('button');
@@ -28,7 +29,7 @@ export class BornePrivee extends Borne {
         button.textContent = 'Réserver';
         // Call custom event from parent class
         button.addEventListener('click', () => {
-            this.reservationEvent('Privée', this.proprietaire);
+            this.reservationEvent(this.type, this.proprietaire);
         });
         div.appendChild(button);
         return div;
@@ -44,7 +45,7 @@ export class BornePrivee extends Borne {
         coordsTd.textContent = `${this.latitude}, ${this.longitude}`;
         row.appendChild(coordsTd);
         const typeTd = document.createElement('td');
-        typeTd.textContent = 'Privée';
+        typeTd.textContent = this.type;
         row.appendChild(typeTd);
         const ownerTd = document.createElement('td');
         ownerTd.textContent = this.proprietaire;
@@ -55,7 +56,7 @@ export class BornePrivee extends Borne {
         reserverBtn.textContent = 'Réserver';
         // Call custom event from parent class
         reserverBtn.addEventListener('click', () => {
-            this.reservationEvent('Privée', this.proprietaire);
+            this.reservationEvent(this.type, this.proprietaire);
         });
         actionTd.appendChild(reserverBtn);
         row.appendChild(actionTd);

@@ -1,7 +1,10 @@
  export class Reservation {
-    constructor(date, time, duration) {
+    constructor(borneId, typeBorne, date, startTime, duration) {
+        this.id;
+        this.idBorne = borneId;
+        this.typeBorne = typeBorne;
         this.date = date;
-        this.time = time;
-        this.duration = duration;
+        this.heureDebut = startTime;
+        this.duree = duration;
     }
 }

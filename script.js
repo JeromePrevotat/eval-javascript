@@ -1,6 +1,6 @@
 import { BornePublique } from './modules/publicBorne.js';
 import { BornePrivee } from './modules/privateBorne.js';
-// import { Reservation } from './modules/reservation.js';
+import { Reservation } from './modules/reservation.js';
 
 const adresseInput = document.getElementById("adresse-input");
 const adressLookupBtn = document.getElementById("adress-lookup-btn");
@@ -9,11 +9,16 @@ const bornesTable = document.getElementById("bornes-table");
 const bornesTableBody = document.getElementById("bornes-table-body");
 const reservationFormContainer = document.getElementById("reservation-form-container");
 const reservationTitle = document.getElementById("reservation-title");
+const dateInput = document.getElementById("date-input");
+const timeInput = document.getElementById("time-input");
+const durationInput = document.getElementById("duree-input");
+const confirmReservationBtn = document.getElementById("confirm-reservation-btn");
 
 let latitude;
 let longitude;
 let circle;
 const bornes = [];
+const reservations = [];
 const proprietaireNames = [
     "Adélaïde", "Adèle", "Adeline",
     "Adrien", "Adrienne", "Agathe",
@@ -216,15 +221,57 @@ const overpassApiendpoint = 'https://overpass-api.de/api/interpreter';
 const overpassTimeout = 10; // seconds
 const radius = 5000; // meters
 
+function validateReservationInputs() {}
+
+function confirmReservation() {
+    let error = null;
+    error = validateReservationInputs();
+    if (error) {
+        console.error("Invalid reservation inputs:", error);
+        return;
+    }
+    // Get the values from the form inputs and the borne ID from the data-id attribute
+    const borneId = reservationFormContainer.dataset.borneId;
+    if (!borneId) {
+        console.error("Borne ID is not set in the reservation form container.");
+        return;
+    }
+    // Find the type of the Borne using the ID
+    const typeBorne = bornes.filter(borne => borne.id == borneId)[0].type;
+    const date = dateInput.value;
+    const startTime = timeInput.value;
+    const duration = durationInput.value;
+
+    // Create a new Reservation object
+    const reservation = new Reservation(borneId, typeBorne, date, startTime, duration);
+    reservations.push(reservation);
+    console.log("Reservation confirmed:", reservation);
+
+    // Clear Inputs for the next reservation
+    setDefaultReservationInputsValues();
+    durationInput.value = '';
+}
+
+function setDefaultReservationInputsValues() {
+    const today = new Date();
+        // Set default values for date input to today's date "YYYY-MM-DD"
+        dateInput.value = today.toLocaleDateString('sv-SE');
+        // Set default time to current hour and minute "HH:MM" with local timezone
+        timeInput.value = today.toLocaleTimeString('fr-FR', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+        });
+}
+
 function handleReservation(borneId, type, proprietaire) {
     reservationFormContainer.style.display = 'block';
     reservationFormContainer.dataset.borneId = borneId;
-
-    console.log(proprietaire);
     const titleText = (proprietaire == null || proprietaire == "N/A") ?
                                         `Réserver la borne ${type} (${borneId})` :
                                         `Réserver la borne ${type} (${borneId}) de ${proprietaire}`;
     reservationTitle.textContent = titleText;
+    setDefaultReservationInputsValues();
 }
 
 function buildTable() {
@@ -414,6 +461,11 @@ function addEventListeners() {
             bornesTable.style.display = "block";
             buildTable();
         }
+    });
+
+    confirmReservationBtn.addEventListener("click", (event) => {
+        event.preventDefault();
+        confirmReservation();
     });
 
     // Custom event listener for reservation
