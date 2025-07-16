@@ -1,3 +1,5 @@
+import { Borne } from './borne.js';
+
 export class BornePrivee extends Borne {
     constructor(latitude, longitude, proprietaire) {
         super(latitude, longitude);
