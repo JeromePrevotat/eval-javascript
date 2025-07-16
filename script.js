@@ -14,6 +14,7 @@ const timeInput = document.getElementById("time-input");
 const durationInput = document.getElementById("duree-input");
 const confirmReservationBtn = document.getElementById("confirm-reservation-btn");
 const reservationTableBody = document.getElementById("reservations-table-body");
+const countdown = document.getElementById("countdown");
 
 let latitude;
 let longitude;
@@ -21,6 +22,7 @@ let circle;
 let isLocalStorageAvailable = false;
 const bornes = [];
 let reservations = [];
+let countdownIntervalId = null;
 const proprietaireNames = [
     "Adélaïde", "Adèle", "Adeline",
     "Adrien", "Adrienne", "Agathe",
@@ -320,6 +322,8 @@ function confirmReservation() {
     else displayReservations(reservations);
     // Display a confirmation message
     displayConfirmationModal(reservation);
+    // Call startCountdown to update it with the newly added Reservation
+    startCountdown();
     // Clear Inputs for the next reservation
     setDefaultReservationInputsValues();
     durationInput.value = '';
@@ -534,9 +538,6 @@ function initMap() {
 }
 
 function addEventListeners() {
-    const testButton = document.getElementById("test-button");
-    testButton.addEventListener("click", () => test());
-
     adressLookupBtn.addEventListener("click", (event) => {
         event.preventDefault();
         adressLookUp();
@@ -575,6 +576,71 @@ function addEventListeners() {
     console.log("Event Listeners added");
 }
 
+function formatTimeRemaining(milliseconds) {
+    const totalSeconds = Math.floor(milliseconds / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+}
+
+function getRemainingTimeBeforeNextReservation(reservation) {
+    const now = new Date();
+    // Create a Date object for the reservation date and time
+    const reservationDateTime = new Date(reservation.date + 'T' + reservation.heureDebut + ':00');
+    // Calculate the difference in milliseconds
+    return reservationDateTime.getTime() - now.getTime();
+}
+
+function getNextReservation() {
+    // Get today's date YYYY-MM-DD and current time
+    const now = new Date();
+    const today = now.toLocaleDateString('sv-SE');
+    // Get the current time in minutes
+    const currentTime = now.getHours() * 60 + now.getMinutes();
+    const nextReservation = reservations
+                            .filter(reservation => {
+                                // Get reservation time in minutes
+                                const [hh, mm] = reservation.heureDebut.split(':');
+                                const resTime = parseInt(hh) * 60 + parseInt(mm);
+                                // Keeps only those later today or in the future
+                                return (reservation.date === today && resTime > currentTime) || (reservation.date > today);
+                            })
+                            // Sort by date and time, returns the first element of the sorted array
+                            .sort((r1, r2) => r1.date !== r2.date ?
+                                r1.date.localeCompare(r2.date) :
+                                r1.heureDebut.localeCompare(r2.heureDebut))
+                                [0];
+    return nextReservation;
+}
+
+function displayCountdown() {
+    // Get the remaining time before the next reservation
+    const nextReservation = getNextReservation();
+    // If there are no reservations, display a message
+    if (!nextReservation) {
+        countdown.textContent = "Aucune réservation prochainement";
+        return;
+    }
+    // Calculate the remaining time
+    const remainingTime = getRemainingTimeBeforeNextReservation(nextReservation);
+    // Format it to a human-readable format and display it
+    const remainingTimeFormatted = formatTimeRemaining(remainingTime);
+    countdown.textContent = `Prochaine réservation dans: ${remainingTimeFormatted}`;
+
+}
+
+function startCountdown(){
+    // Cancel the previous Interval if it exists
+    if (countdownIntervalId) clearInterval(countdownIntervalId);
+    countdownIntervalId = setInterval(() => {
+        displayCountdown();
+    }, 1000); // 1sec
+
+    displayCountdown();
+}
+
 function sanitizeInput(input) {
     // Removes <HTML Tags> and trims whitespace
     return input.replace(/<[^>]*>/g, '').trim();
@@ -610,14 +676,7 @@ function main(){
     if (isLocalStorageAvailable && localStorage.getItem("reservations")) {
         displayReservations(getReservationsFromLocalStrorage());
     }
-}
-
-
-
-
-
-async function test(){
-    console.log(bornes);
+    startCountdown();
 }
 
 main();
