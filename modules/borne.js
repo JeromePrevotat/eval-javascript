@@ -3,6 +3,7 @@ export class Borne{
         this.id;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.marker = null;
     }
 
     toHTML() {
@@ -35,5 +36,12 @@ export class Borne{
     }
     setLongitude(longitude) {
         this.longitude = longitude;
+    }
+
+    getMarker() {
+        return this.marker;
+    }
+    setMarker(marker) {
+        this.marker = marker;
     }
 }

@@ -238,6 +238,10 @@ function initMap() {
     console.log("Map initialized");
 }
 
+function addBorneMarker(){
+
+}
+
 function pickRandomname(){
     const randomIndex = Math.floor(Math.random() * proprietaireNames.length);
     return proprietaireNames[randomIndex];
@@ -259,10 +263,13 @@ function fillBornesArray(data){
         if(element.id % 2 === 0) {
             const borne = new BornePublique(element.lat, element.lon);
             borne.id = element.id;
+            console.log(element.id,element.lat, element.lon);
+            borne.maker = L.marker([element.lat, element.lon]).addTo(map);
             bornes.push(borne);
         } else {
             const borne = new BornePrivee(element.lat, element.lon, pickRandomname());
             borne.id = element.id;
+            borne.marker = L.marker([element.lat, element.lon]).addTo(map);
             bornes.push(borne);
         }
     });
@@ -276,14 +283,15 @@ async function fetchBornes(){
         return;
     }
     // Items are classified as node/way/relation
+    // Ignore ways and relations for now as they represents area and as such have a different coord structure
+    // way["amenity"="charging_station"](around:${radius},${latitude},${longitude});
+    // relation["amenity"="charging_station"](around:${radius},${latitude},${longitude});
     const query = `[out:json][timeout:${overpassTimeout}];
     (
-      node["amenity"="charging_station"](around:${radius},${latitude},${longitude});
-      way["amenity"="charging_station"](around:${radius},${latitude},${longitude});
-      relation["amenity"="charging_station"](around:${radius},${latitude},${longitude});
+        node["amenity"="charging_station"](around:${radius},${latitude},${longitude});
     );
     out geom;`;
-
+        
     try {
         const response = await fetch(overpassApiendpoint, {
             // POST is the recommended method for Overpass API
@@ -297,6 +305,7 @@ async function fetchBornes(){
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         // Everything is ok, parse the JSON response
         const data = await response.json();
+        console.log( data);
         // Create Bornes from the data
         fillBornesArray(data);
     } catch (error) {
@@ -327,8 +336,8 @@ async function adressLookUp(){
             return;
         }
         // Center the map on the first result
-        const latitude = data[0].lat;
-        const longitude = data[0].lon;
+        latitude = data[0].lat;
+        longitude = data[0].lon;
         setMapLocation(latitude, longitude);
         // Get Bornes around this location
         fetchBornes();        
