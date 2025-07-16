@@ -7,12 +7,27 @@ export class Borne{
     }
 
     toHTMLMarker() {
-        return `<div class="borne" data-id="${this.id}">
-                    <p style="font-weight: bold;">Borne ID: ${this.id}</p>
-                    <p>Coordonées: ${this.latitude}, ${this.longitude}
-                    <br>
-                    Type: Publique</p>
-                </div>`;
+        // Container
+        const div = document.createElement('div');
+        div.className = 'borne';
+        div.dataset.id = this.id;
+        // ID
+        const idParagraph = document.createElement('p');
+        idParagraph.style.fontWeight = 'bold';
+        idParagraph.textContent = `Borne ID: ${this.id}`;
+        div.appendChild(idParagraph);
+        // Coordonées and Type
+        const infosParagraph = document.createElement('p');
+        // Use pre-wrap to allow line breaks
+        infosParagraph.style.whiteSpace = 'pre-wrap';
+        infosParagraph.textContent = `Coordonées: ${this.latitude}, ${this.longitude}\nType: Publique`;
+        div.appendChild(infosParagraph);
+        // Button
+        const button = document.createElement('button');
+        button.className = 'btn btn-primary btn-sm btn-book';
+        button.textContent = 'Réserver';
+        div.appendChild(button);
+        return div;
     }
 
     toHTMLTable() {
@@ -30,6 +45,12 @@ export class Borne{
         const ownerTd = document.createElement('td');
         ownerTd.textContent = 'N/A';
         row.appendChild(ownerTd);
+        const actionTd = document.createElement('td');
+        const reserverBtn = document.createElement('button');
+        reserverBtn.className = 'btn btn-primary btn-sm btn-book';
+        reserverBtn.textContent = 'Réserver';
+        actionTd.appendChild(reserverBtn);
+        row.appendChild(actionTd);
         return row;
     }
 

@@ -247,7 +247,7 @@ function buildTable() {
         console.warn("No Bornes available to display in the table.");
         const tr = document.createElement("tr");
         const td = document.createElement("td");
-        td.colSpan = 4;
+        td.colSpan = 5;
         td.textContent = "Aucune borne disponible";
         tr.appendChild(td);
         bornesTableBody.appendChild(tr);
