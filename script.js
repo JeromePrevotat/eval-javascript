@@ -6,6 +6,7 @@ const adresseInput = document.getElementById("adresse-input");
 const adressLookupButton = document.getElementById("adress-lookup-btn");
 let latitude;
 let longitude;
+let circle;
 const bornes = [];
 const proprietaireNames = [
     "Adélaïde", "Adèle", "Adeline",
@@ -263,13 +264,17 @@ function fillBornesArray(data){
         if(element.id % 2 === 0) {
             const borne = new BornePublique(element.lat, element.lon);
             borne.id = element.id;
+            borne.marker = L.marker([element.lat, element.lon]).addTo(map);
+            borne.marker.bindPopup(borne.toHTML());
             console.log(element.id,element.lat, element.lon);
-            borne.maker = L.marker([element.lat, element.lon]).addTo(map);
             bornes.push(borne);
         } else {
             const borne = new BornePrivee(element.lat, element.lon, pickRandomname());
             borne.id = element.id;
             borne.marker = L.marker([element.lat, element.lon]).addTo(map);
+            borne.marker.bindPopup(borne.toHTML());
+                        console.log(element.id,element.lat, element.lon);
+
             bornes.push(borne);
         }
     });
@@ -305,7 +310,6 @@ async function fetchBornes(){
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         // Everything is ok, parse the JSON response
         const data = await response.json();
-        console.log( data);
         // Create Bornes from the data
         fillBornesArray(data);
     } catch (error) {
@@ -339,6 +343,13 @@ async function adressLookUp(){
         latitude = data[0].lat;
         longitude = data[0].lon;
         setMapLocation(latitude, longitude);
+        // Add a circle to the map at the location
+        circle = L.circle([latitude, longitude], {
+            color: 'red',
+            fillColor: '#f03',
+            fillOpacity: 0.1,
+            radius: 5000
+        }).addTo(map);
         // Get Bornes around this location
         fetchBornes();        
     }

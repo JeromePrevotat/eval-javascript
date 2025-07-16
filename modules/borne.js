@@ -1,3 +1,5 @@
+import { BornePublique } from './publicBorne.js';
+
 export class Borne{
     constructor(latitude, longitude) {
         this.id;
@@ -8,8 +10,10 @@ export class Borne{
 
     toHTML() {
         return `<div class="borne" data-id="${this.id}">
-                    <p>Latitude: ${this.latitude}</p>
-                    <p>Longitude: ${this.longitude}</p>
+                    <p style="font-weight: bold;">Borne ID: ${this.id}</p>
+                    <p>Coordonées: ${this.latitude}, ${this.longitude}
+                    <br>
+                    Type: ${this instanceof BornePublique ? 'Publique' : 'Privée'}</p>
                 </div>`;
     }
 
