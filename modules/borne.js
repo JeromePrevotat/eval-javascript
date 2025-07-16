@@ -63,8 +63,8 @@ export class Borne{
     }
 
     // Custom Event for reservation
+    // CustomEvent takes 2 parameters: event name and an object with details passed on
     reservationEvent(type, proprietaire){
-        console.log(`Reservation event triggered for Borne ID: ${this.id}`);
         const event = new CustomEvent('custom-reservation-event', {
             detail: {
                 borneId: this.id,
@@ -72,6 +72,7 @@ export class Borne{
                 proprietaire: proprietaire ? proprietaire : 'N/A'
             }
         });
+        // Dispatch the event to the document so it can be catched by the listener
         document.dispatchEvent(event);
     }
 

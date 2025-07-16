@@ -13,6 +13,7 @@ const dateInput = document.getElementById("date-input");
 const timeInput = document.getElementById("time-input");
 const durationInput = document.getElementById("duree-input");
 const confirmReservationBtn = document.getElementById("confirm-reservation-btn");
+const reservationTableBody = document.getElementById("reservations-table-body");
 
 let latitude;
 let longitude;
@@ -221,6 +222,24 @@ const overpassApiendpoint = 'https://overpass-api.de/api/interpreter';
 const overpassTimeout = 10; // seconds
 const radius = 5000; // meters
 
+function displayReservations(reservations) {
+    // Clear previous table content
+    reservationTableBody.innerHTML = "";
+    // Aucune Réservation en cours
+    if (reservations.length === 0) {
+        const tr = document.createElement("tr");
+        const td = document.createElement("td");
+        td.colSpan = 5;
+        td.textContent = "Aucune réservation trouvée";
+        tr.appendChild(td);
+        reservationTableBody.appendChild(tr);
+    }
+    // Add each Reservation to the table
+    reservations.forEach(reservation => {
+        reservationTableBody.appendChild(reservation.toHTMMLTable());
+    });
+}
+
 function validateReservationInputs() {}
 
 function confirmReservation() {
@@ -245,7 +264,7 @@ function confirmReservation() {
     // Create a new Reservation object
     const reservation = new Reservation(borneId, typeBorne, date, startTime, duration);
     reservations.push(reservation);
-    console.log("Reservation confirmed:", reservation);
+    displayReservations(reservations);
 
     // Clear Inputs for the next reservation
     setDefaultReservationInputsValues();
@@ -486,6 +505,7 @@ function main(){
     console.log("Electricity Business Application Started");
     addEventListeners();
     initMap('map');
+    displayReservations(reservations);
 }
 
 
