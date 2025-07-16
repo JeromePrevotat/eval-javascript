@@ -1,5 +1,3 @@
-import { BornePublique } from './publicBorne.js';
-
 export class Borne{
     constructor(latitude, longitude) {
         this.id;
@@ -8,13 +6,31 @@ export class Borne{
         this.marker = null;
     }
 
-    toHTML() {
+    toHTMLMarker() {
         return `<div class="borne" data-id="${this.id}">
                     <p style="font-weight: bold;">Borne ID: ${this.id}</p>
                     <p>Coordonées: ${this.latitude}, ${this.longitude}
                     <br>
-                    Type: ${this instanceof BornePublique ? 'Publique' : 'Privée'}</p>
+                    Type: Publique</p>
                 </div>`;
+    }
+
+    toHTMLTable() {
+        const row = document.createElement('tr');
+        row.dataset.id = this.id;
+        const idTd = document.createElement('td');
+        idTd.textContent = this.id;
+        row.appendChild(idTd);
+        const coordsTd = document.createElement('td');
+        coordsTd.textContent = `${this.latitude}, ${this.longitude}`;
+        row.appendChild(coordsTd);
+        const typeTd = document.createElement('td');
+        typeTd.textContent = 'Publique';
+        row.appendChild(typeTd);
+        const ownerTd = document.createElement('td');
+        ownerTd.textContent = 'N/A';
+        row.appendChild(ownerTd);
+        return row;
     }
 
     isBooked(date, time, duration) {

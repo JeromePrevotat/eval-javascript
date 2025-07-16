@@ -38,11 +38,24 @@
                                 </div>
                             </form>
                         </div>
-                        <button class="btn btn-secondary my-2">Basculer vue</button>
+                        <button id="switch-mode-btn" class="btn btn-secondary my-2">Basculer vue</button>
                         <div class="row">
                             <h2>Autour de vous</h2>
                             <!-- map -->
                              <div id="map" style="height: 400px;"></div>
+                             <table id="bornes-table" class="table table-striped table-bordered border-secondary" style="display: none;">
+                                 <thead>
+                                     <tr>
+                                        <th>ID</th>
+                                        <th>Coordonnées</th>
+                                        <th>Type</th>
+                                        <th>Propriétaire</th>
+                                     </tr>
+                                 </thead>
+                                 <tbody id="bornes-table-body">
+                                     <!-- Les lignes des bornes seront ajoutées ici dynamiquement -->
+                                 </tbody>
+                             </table>
                         </div>
                     </div>
                 </div>

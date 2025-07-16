@@ -3,7 +3,10 @@ import { BornePrivee } from './modules/privateBorne.js';
 // import { Reservation } from './modules/reservation.js';
 
 const adresseInput = document.getElementById("adresse-input");
-const adressLookupButton = document.getElementById("adress-lookup-btn");
+const adressLookupBtn = document.getElementById("adress-lookup-btn");
+const switchModeBtn = document.getElementById("switch-mode-btn");
+const bornesTable = document.getElementById("bornes-table");
+const bornesTableBody = document.getElementById("bornes-table-body");
 let latitude;
 let longitude;
 let circle;
@@ -239,8 +242,23 @@ function initMap() {
     console.log("Map initialized");
 }
 
-function addBorneMarker(){
-
+function buildTable() {
+    if (bornes.length === 0) {
+        console.warn("No Bornes available to display in the table.");
+        const tr = document.createElement("tr");
+        const td = document.createElement("td");
+        td.colSpan = 4;
+        td.textContent = "Aucune borne disponible";
+        tr.appendChild(td);
+        bornesTableBody.appendChild(tr);
+        return;
+    }
+    // Clear previous table content
+    bornesTableBody.innerHTML = "";
+    // Add each Borne to the table
+    bornes.forEach(borne => {
+        bornesTableBody.appendChild(borne.toHTMLTable());
+    });
 }
 
 function pickRandomname(){
@@ -261,20 +279,18 @@ function fillBornesArray(data){
     bornes.length = 0;
     // Add each Borne to the empty list
     data.elements.forEach(element => {
+        // Even ID are Public
         if(element.id % 2 === 0) {
             const borne = new BornePublique(element.lat, element.lon);
             borne.id = element.id;
             borne.marker = L.marker([element.lat, element.lon]).addTo(map);
-            borne.marker.bindPopup(borne.toHTML());
-            console.log(element.id,element.lat, element.lon);
+            borne.marker.bindPopup(borne.toHTMLMarker());
             bornes.push(borne);
         } else {
             const borne = new BornePrivee(element.lat, element.lon, pickRandomname());
             borne.id = element.id;
             borne.marker = L.marker([element.lat, element.lon]).addTo(map);
-            borne.marker.bindPopup(borne.toHTML());
-                        console.log(element.id,element.lat, element.lon);
-
+            borne.marker.bindPopup(borne.toHTMLMarker());
             bornes.push(borne);
         }
     });
@@ -370,10 +386,24 @@ function addEventListeners() {
     const testButton = document.getElementById("test-button");
     testButton.addEventListener("click", () => test());
 
-    adressLookupButton.addEventListener("click", (event) => {
+    adressLookupBtn.addEventListener("click", (event) => {
         event.preventDefault();
         adressLookUp();
     });
+
+    switchModeBtn.addEventListener("click", (event) => {
+        event.preventDefault();
+        // Toggle the map view mode
+        if(mapContainer.style.display === "none") {
+            mapContainer.style.display = "block";
+            bornesTable.style.display = "none";
+        } else {
+            mapContainer.style.display = "none";
+            bornesTable.style.display = "block";
+            buildTable();
+        }
+    });
+
     console.log("Event Listeners added");
 }
 

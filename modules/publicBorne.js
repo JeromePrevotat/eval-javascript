@@ -5,7 +5,11 @@ export class BornePublique extends Borne {
         super(latitude, longitude);
     }
 
-    toHTML() {
-        return super.toHTML();
+    toHTMLMarker() {
+        return super.toHTMLMarker();
+    }
+
+    toHTMLTable() {
+        return super.toHTMLTable();
     }
 }
