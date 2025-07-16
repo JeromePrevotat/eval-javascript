@@ -44,6 +44,7 @@ async function adressLookUp(){
     const queryParam = sanitizeInput(adresseInput.value) + '&format=json';
 
     try {
+        // Send the GET request to Nominatim API
         let response = await fetch(endpoint + queryParam, {
             method: 'GET',
             headers: {
@@ -52,13 +53,28 @@ async function adressLookUp(){
         });
         // Error handling
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-    
+        // Parse the JSON response
         const data = await response.json();
         console.log("Response from Nominatim:", data);
-        return data;
+        // Check if data is not empty and set the map location
+        if (data.length > 0) {
+            const latitude = data[0].lat;
+            const longitude = data[0].lon;
+            setMapLocation(latitude, longitude);
+        } else {
+            console.warn("No results found for the provided address.");
+        }
     }
     catch (error) {
         console.error("Error fetching data from Nominatim:", error);
+    }
+}
+
+function setMapLocation(latitude, longitude) {
+    if (latitude && longitude) {
+        map.setView([latitude, longitude], 14);
+    } else {
+        console.error("Invalid latitude or longitude provided.");
     }
 }
 
