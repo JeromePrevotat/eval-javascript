@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electricity Business</title>
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+</head>
+<body>
+    <header class="bg-primary text-white text-center py-3 mb-3 d-flex flex-column align-items-center">
+        <h1 class="mb-4">Electricity Business</h1>
+        <p id="countdown">Prochaine réservation dans: hh:mm:ss</p>
+    </header>
+    <main>
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <div class="map-section mb-3">
+                        <div class="form-container mb-3">
+                            <form action="" id="adresse-form" class="d-flex align-items-center gap-3">
+                                <label for="adresse" class="col-form-label">Adresse:</label>
+                                <input type="text" id="adresse" class="form-control flex-grow-1" placeholder="Entrez l'adresse">
+                                <button type="submit" class="btn btn-primary">Rechercher</button>
+                            </form>
+                        </div>
+                        <button class="btn btn-secondary my-2">Basculer vue</button>
+                        <div class="row">
+                            <h2>Autour de vous</h2>
+                            <!-- map -->
+                             <div id="map" style="height: 400px;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="reservation-section">
+                        <h2>Nouvelle réservation</h2>
+                        <form action="" id="reservation-form" class="d-flex align-items-center gap-3">
+                            <div class="row g-2 align-items-center">
+                                <div class="col-auto">
+                                    <label for="date" class="col-form-label">Date:</label>
+                                </div>
+                                <div class="col">
+                                    <input type="date" id="date-input" class="form-control flex-grow-1" placeholder="Entrez la date">
+                                </div>
+                                <div class="col-auto">
+                                    <label for="time" class="col-form-label">Heure:</label>
+                                </div>
+                                <div class="col">
+                                    <input type="time" id="time-input" class="form-control flex-grow-1" placeholder="Entrez l'heure">
+                                </div>
+                                <div class="col-auto">
+                                    <label for="duree" class="col-form-label">Durée:</label>
+                                </div>
+                                <div class="col">
+                                    <select id="duree-input" class="form-select">
+                                        <option value="" selected>choisir la durée</option>
+                                        <option value="1">1 heure</option>
+                                        <option value="2">2 heures</option>
+                                        <option value="3">3 heures</option>
+                                        <option value="4">4 heures</option>
+                                        <option value="5">5 heures</option>
+                                        <option value="6">6 heures</option>
+                                    </select>
+                                </div>
+                                <div class="col-auto">
+                                    <button type="submit" class="btn btn-primary">Confirmer</button>
+                                </div>
+                            </div>
+                        </form>
+                        <h2>Mes réservations</h2>
+                        <!-- table -->
+                </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script type="module" src="script.js"></script>
+    <!-- Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+</body>
+</html>
