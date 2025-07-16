@@ -263,7 +263,38 @@ function displayReservations(reservations) {
 }
 
 function validateReservationInputs() {
-    alert("WIP");
+    let errorMessage = "";
+    if (!dateInput.value) errorMessage += "Date is required.\n";
+    // Check if date is today or in the future
+    const today = new Date()
+    const todayDateString = today.toISOString().split('T')[0]; // "YYYY-MM-DD"
+    const inputDate = new Date(dateInput.value);
+    const inputDateString = inputDate.toISOString().split('T')[0]; // "YYYY-MM-DD"
+    if (inputDateString < todayDateString) errorMessage += "Date cannot be in the past.\n";
+    if (!timeInput.value) errorMessage += "Time is required.\n";
+
+    const inputTime = new Date(`${dateInput.value}T${timeInput.value}:00`);
+    if (inputDateString === todayDateString){
+        // Get Hours and Minutes, Ignore Seconds 22:00:15 == 22:00:59
+        const nowHours = today.getHours();
+        const nowMinutes = today.getMinutes();
+        const inputHours = inputTime.getHours();
+        const inputMinutes = inputTime.getMinutes();
+        
+        const nowTotalMinutes = nowHours * 60 + nowMinutes;
+        const inputTotalMinutes = inputHours * 60 + inputMinutes;
+        if (inputTotalMinutes < nowTotalMinutes) {
+            errorMessage += "Time must not be in the past.\n";
+    }
+    }
+    if (!durationInput.value) errorMessage += "Duration is required.\n";
+    // Check if duration is before 06:00
+    if (inputTime.getHours() < 6) errorMessage += "Reservation cannot start before 06:00.\n";
+    // Check if time + duration exceeds 22:00
+    const endTime = new Date(inputTime.getTime() + durationInput.value * 60 * 60 * 1000);
+    if (endTime.getHours() > 22) errorMessage += "Reservation cannot exceed 22:00.\n";
+
+    return errorMessage ? errorMessage : null;
 }
 
 function displayConfirmationModal(reservation) {
@@ -296,6 +327,7 @@ function confirmReservation() {
     error = validateReservationInputs();
     if (error) {
         console.error("Invalid reservation inputs:", error);
+        alert(error);
         return;
     }
     // Get the values from the form inputs and the borne ID from the data-id attribute
