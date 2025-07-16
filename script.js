@@ -18,6 +18,7 @@ const reservationTableBody = document.getElementById("reservations-table-body");
 let latitude;
 let longitude;
 let circle;
+let isLocalStorageAvailable = false;
 const bornes = [];
 const reservations = [];
 const proprietaireNames = [
@@ -222,6 +223,25 @@ const overpassApiendpoint = 'https://overpass-api.de/api/interpreter';
 const overpassTimeout = 10; // seconds
 const radius = 5000; // meters
 
+function isStorageAvailable(type){
+    let storage;
+    try {
+        storage = window[type];
+        const x = "__storage_test__";
+        storage.setItem(x, x);
+        storage.removeItem(x);
+        return true;
+    } catch (e) {
+    return (
+        e instanceof DOMException &&
+        e.name === "QuotaExceededError" &&
+        // acknowledge QuotaExceededError only if there's something already stored
+        storage &&
+        storage.length !== 0
+        );
+    }
+}
+
 function displayReservations(reservations) {
     // Clear previous table content
     reservationTableBody.innerHTML = "";
@@ -264,8 +284,13 @@ function confirmReservation() {
     // Create a new Reservation object
     const reservation = new Reservation(borneId, typeBorne, date, startTime, duration);
     reservations.push(reservation);
-    displayReservations(reservations);
-
+    // Save the reservation to localStorage if available
+    if (isLocalStorageAvailable) {
+        localStorage.setItem("reservations", JSON.stringify(reservations));
+        displayReservations(getReservationsFromLocalStrorage());
+    }
+    // Display from memory if localStorage is not available
+    else displayReservations(reservations);
     // Clear Inputs for the next reservation
     setDefaultReservationInputsValues();
     durationInput.value = '';
@@ -501,11 +526,35 @@ function sanitizeInput(input) {
     return input.replace(/<[^>]*>/g, '').trim();
 }
 
+function getReservationsFromLocalStrorage() {
+    if (isLocalStorageAvailable && localStorage.getItem("reservations")) {
+        // Clear memory array
+        reservations.length = 0;
+        JSON.parse(localStorage.getItem("reservations"))
+                .forEach(reservation => {
+                    const reservationObj = new Reservation(
+                        reservation.idBorne,
+                        reservation.typeBorne,
+                        reservation.date,
+                        reservation.heureDebut,
+                        reservation.duree);
+                    reservationObj.id = reservation.id;
+                    // Add the reservation to the memory array
+                    reservations.push(reservationObj);
+        })
+    }
+    return reservations;
+}
+
 function main(){
     console.log("Electricity Business Application Started");
     addEventListeners();
+    isLocalStorageAvailable = isStorageAvailable("localStorage");
+    if (isLocalStorageAvailable !== true) console.error("LocalStorage is not available");
     initMap('map');
-    displayReservations(reservations);
+    if (isLocalStorageAvailable && localStorage.getItem("reservations")) {
+        displayReservations(getReservationsFromLocalStrorage());
+    }
 }
 
 
