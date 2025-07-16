@@ -121,6 +121,24 @@
                 </div>
             </div>
         </div>
+    <!-- Modal de confirmation -->
+    <!-- tabindex -1 empeche de tab le modal -->
+    <div class="modal fade" id="confirmation-modal" tabindex="-1" aria-labelledby="confirmation-modal-label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmation-modal-label">Réservation confirmée</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="confirmation-message"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="dismiss-modal-btn" data-bs-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
     </main>
     <script type="module" src="script.js"></script>
     <!-- Bootstrap -->

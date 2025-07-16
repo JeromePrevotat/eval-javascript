@@ -260,7 +260,34 @@ function displayReservations(reservations) {
     });
 }
 
-function validateReservationInputs() {}
+function validateReservationInputs() {
+    alert("WIP");
+}
+
+function displayConfirmationModal(reservation) {
+    const modal = document.getElementById("confirmation-modal");
+    const modalBody = modal.querySelector(".modal-body");
+    // Clear previous content
+    modalBody.innerHTML = "";
+    // Set the content of the modal body with reservation details
+    if (!reservation || !reservation.idBorne || !reservation.typeBorne || !reservation.date || !reservation.heureDebut || !reservation.duree) {
+        console.error("Invalid reservation object:", reservation);
+    } else {
+        const modalContent = document.createElement("p");
+        modalContent.style.whiteSpace = "pre-wrap";
+        modalContent.textContent =
+            `Réservation confirmée pour la borne ${reservation.idBorne} (${reservation.typeBorne})\n
+            Date : ${reservation.date}\n
+            Heure de début : ${reservation.heureDebut}\n
+            Durée : ${reservation.duree} heures`;
+        modalBody.appendChild(modalContent);
+    }
+    // Show the modal
+    const bootstrapModal = new bootstrap.Modal(modal);
+    bootstrapModal.show();
+    // Focus on the modal to prevent tabbing out
+    modal.focus();
+}
 
 function confirmReservation() {
     let error = null;
@@ -291,6 +318,8 @@ function confirmReservation() {
     }
     // Display from memory if localStorage is not available
     else displayReservations(reservations);
+    // Display a confirmation message
+    displayConfirmationModal(reservation);
     // Clear Inputs for the next reservation
     setDefaultReservationInputsValues();
     durationInput.value = '';
@@ -552,6 +581,7 @@ function main(){
     isLocalStorageAvailable = isStorageAvailable("localStorage");
     if (isLocalStorageAvailable !== true) console.error("LocalStorage is not available");
     initMap('map');
+    // Loads LocalStorage reservations if available on page load
     if (isLocalStorageAvailable && localStorage.getItem("reservations")) {
         displayReservations(getReservationsFromLocalStrorage());
     }
