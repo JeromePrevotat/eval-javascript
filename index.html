@@ -62,40 +62,43 @@
                 </div>
                 <div class="col">
                     <div class="reservation-section">
-                        <h2>Nouvelle réservation</h2>
-                        <form action="" id="reservation-form" class="d-flex align-items-center gap-3">
-                            <div class="row g-2 align-items-center">
-                                <div class="col-auto">
-                                    <label for="date" class="col-form-label">Date:</label>
+                        <div id="reservation-form-container" class="mb-3" style="display: none;">
+                            <h2>Nouvelle réservation</h2>
+                            <h3 id="reservation-title"></h3>
+                            <form action="" id="reservation-form" class="d-flex align-items-center gap-3">
+                                <div class="row g-2 align-items-center">
+                                    <div class="col-auto">
+                                        <label for="date" class="col-form-label">Date:</label>
+                                    </div>
+                                    <div class="col">
+                                        <input type="date" id="date-input" class="form-control flex-grow-1" placeholder="Entrez la date">
+                                    </div>
+                                    <div class="col-auto">
+                                        <label for="time" class="col-form-label">Heure:</label>
+                                    </div>
+                                    <div class="col">
+                                        <input type="time" id="time-input" class="form-control flex-grow-1" placeholder="Entrez l'heure">
+                                    </div>
+                                    <div class="col-auto">
+                                        <label for="duree" class="col-form-label">Durée:</label>
+                                    </div>
+                                    <div class="col">
+                                        <select id="duree-input" class="form-select">
+                                            <option value="" selected>choisir la durée</option>
+                                            <option value="1">1 heure</option>
+                                            <option value="2">2 heures</option>
+                                            <option value="3">3 heures</option>
+                                            <option value="4">4 heures</option>
+                                            <option value="5">5 heures</option>
+                                            <option value="6">6 heures</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-auto">
+                                        <button type="submit" class="btn btn-primary">Confirmer</button>
+                                    </div>
                                 </div>
-                                <div class="col">
-                                    <input type="date" id="date-input" class="form-control flex-grow-1" placeholder="Entrez la date">
-                                </div>
-                                <div class="col-auto">
-                                    <label for="time" class="col-form-label">Heure:</label>
-                                </div>
-                                <div class="col">
-                                    <input type="time" id="time-input" class="form-control flex-grow-1" placeholder="Entrez l'heure">
-                                </div>
-                                <div class="col-auto">
-                                    <label for="duree" class="col-form-label">Durée:</label>
-                                </div>
-                                <div class="col">
-                                    <select id="duree-input" class="form-select">
-                                        <option value="" selected>choisir la durée</option>
-                                        <option value="1">1 heure</option>
-                                        <option value="2">2 heures</option>
-                                        <option value="3">3 heures</option>
-                                        <option value="4">4 heures</option>
-                                        <option value="5">5 heures</option>
-                                        <option value="6">6 heures</option>
-                                    </select>
-                                </div>
-                                <div class="col-auto">
-                                    <button type="submit" class="btn btn-primary">Confirmer</button>
-                                </div>
-                            </div>
-                        </form>
+                            </form>
+                        </div>
                         <h2>Mes réservations</h2>
                         <!-- table -->
                 </div>

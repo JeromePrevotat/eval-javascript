@@ -26,6 +26,10 @@ export class BornePrivee extends Borne {
         const button = document.createElement('button');
         button.className = 'btn btn-primary btn-sm btn-book';
         button.textContent = 'Réserver';
+        // Call custom event from parent class
+        button.addEventListener('click', () => {
+            this.reservationEvent('Privée', this.proprietaire);
+        });
         div.appendChild(button);
         return div;
     }
@@ -49,6 +53,10 @@ export class BornePrivee extends Borne {
         const reserverBtn = document.createElement('button');
         reserverBtn.className = 'btn btn-primary btn-sm btn-book';
         reserverBtn.textContent = 'Réserver';
+        // Call custom event from parent class
+        reserverBtn.addEventListener('click', () => {
+            this.reservationEvent('Privée', this.proprietaire);
+        });
         actionTd.appendChild(reserverBtn);
         row.appendChild(actionTd);
         return row;

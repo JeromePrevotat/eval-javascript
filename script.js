@@ -7,6 +7,9 @@ const adressLookupBtn = document.getElementById("adress-lookup-btn");
 const switchModeBtn = document.getElementById("switch-mode-btn");
 const bornesTable = document.getElementById("bornes-table");
 const bornesTableBody = document.getElementById("bornes-table-body");
+const reservationFormContainer = document.getElementById("reservation-form-container");
+const reservationTitle = document.getElementById("reservation-title");
+
 let latitude;
 let longitude;
 let circle;
@@ -212,34 +215,16 @@ let map = L.map(mapContainer);
 const overpassApiendpoint = 'https://overpass-api.de/api/interpreter';
 const overpassTimeout = 10; // seconds
 const radius = 5000; // meters
-// let positionMarker = L.marker();
-// positionMarker = positionMarker.setLatLng([latitude, longitude]).addTo(map);
 
-function addMapCredits(map){
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        }).addTo(map);
-}
+function handleReservation(borneId, type, proprietaire) {
+    reservationFormContainer.style.display = 'block';
+    reservationFormContainer.dataset.borneId = borneId;
 
-function getLocation(){
-    navigator.geolocation.getCurrentPosition((position) => {
-        latitude = position.coords.latitude;
-        longitude = position.coords.longitude;
-        map = map.setView([latitude, longitude], 14);
-        // console.log(`Latitude: ${latitude}, Longitude: ${longitude}, positionAccuracy: ${position.coords.accuracy}`);
-    },
-    (error) => {
-        console.error("Error getting location:", error);
-    },
-    // OPTIONS timeout, accuracy, max cached
-    { timeout: 5000, enableHighAccuracy: true, maximumAge: 2000 });
-}
-
-function initMap() {
-    getLocation();
-    addMapCredits(map);
-    console.log("Map initialized");
+    console.log(proprietaire);
+    const titleText = (proprietaire == null || proprietaire == "N/A") ?
+                                        `Réserver la borne ${type} (${borneId})` :
+                                        `Réserver la borne ${type} (${borneId}) de ${proprietaire}`;
+    reservationTitle.textContent = titleText;
 }
 
 function buildTable() {
@@ -382,6 +367,33 @@ function setMapLocation(latitude, longitude) {
     }
 }
 
+function addMapCredits(map){
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+}
+
+function getLocation(){
+    navigator.geolocation.getCurrentPosition((position) => {
+        latitude = position.coords.latitude;
+        longitude = position.coords.longitude;
+        map = map.setView([latitude, longitude], 14);
+        // console.log(`Latitude: ${latitude}, Longitude: ${longitude}, positionAccuracy: ${position.coords.accuracy}`);
+    },
+    (error) => {
+        console.error("Error getting location:", error);
+    },
+    // OPTIONS timeout, accuracy, max cached
+    { timeout: 5000, enableHighAccuracy: true, maximumAge: 2000 });
+}
+
+function initMap() {
+    getLocation();
+    addMapCredits(map);
+    console.log("Map initialized");
+}
+
 function addEventListeners() {
     const testButton = document.getElementById("test-button");
     testButton.addEventListener("click", () => test());
@@ -402,6 +414,12 @@ function addEventListeners() {
             bornesTable.style.display = "block";
             buildTable();
         }
+    });
+
+    // Custom event listener for reservation
+    document.addEventListener('custom-reservation-event', (event) => {
+        const { borneId, type, proprietaire } = event.detail;
+        handleReservation(borneId, type, proprietaire);
     });
 
     console.log("Event Listeners added");

@@ -26,6 +26,10 @@ export class Borne{
         const button = document.createElement('button');
         button.className = 'btn btn-primary btn-sm btn-book';
         button.textContent = 'Réserver';
+        // Call custom event
+        button.addEventListener('click', () => {
+            this.reservationEvent('Publique', null);
+        });
         div.appendChild(button);
         return div;
     }
@@ -49,9 +53,26 @@ export class Borne{
         const reserverBtn = document.createElement('button');
         reserverBtn.className = 'btn btn-primary btn-sm btn-book';
         reserverBtn.textContent = 'Réserver';
+        // Call custom event
+        reserverBtn.addEventListener('click', () => {
+            this.reservationEvent('Publique', null);
+        });
         actionTd.appendChild(reserverBtn);
         row.appendChild(actionTd);
         return row;
+    }
+
+    // Custom Event for reservation
+    reservationEvent(type, proprietaire){
+        console.log(`Reservation event triggered for Borne ID: ${this.id}`);
+        const event = new CustomEvent('custom-reservation-event', {
+            detail: {
+                borneId: this.id,
+                type: type,
+                proprietaire: proprietaire ? proprietaire : 'N/A'
+            }
+        });
+        document.dispatchEvent(event);
     }
 
     isBooked(date, time, duration) {
