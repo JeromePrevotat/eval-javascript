@@ -20,7 +20,7 @@ let longitude;
 let circle;
 let isLocalStorageAvailable = false;
 const bornes = [];
-const reservations = [];
+let reservations = [];
 const proprietaireNames = [
     "Adélaïde", "Adèle", "Adeline",
     "Adrien", "Adrienne", "Agathe",
@@ -249,7 +249,7 @@ function displayReservations(reservations) {
     if (reservations.length === 0) {
         const tr = document.createElement("tr");
         const td = document.createElement("td");
-        td.colSpan = 5;
+        td.colSpan = 6;
         td.textContent = "Aucune réservation trouvée";
         tr.appendChild(td);
         reservationTableBody.appendChild(tr);
@@ -345,6 +345,25 @@ function handleReservation(borneId, type, proprietaire) {
                                         `Réserver la borne ${type} (${borneId}) de ${proprietaire}`;
     reservationTitle.textContent = titleText;
     setDefaultReservationInputsValues();
+}
+
+function handleReservationDeletion(reservationId) {
+    // Get reservations from localStorage
+    reservations = getReservationsFromLocalStrorage();
+    // Find the reservation to delete
+    const reservationIndex = reservations.findIndex(reservation => reservation.id === reservationId);
+    if (reservationIndex === -1) {
+        console.error(`Reservation with ID ${reservationId} not found.`);
+        return;
+    }
+    // Remove the reservation from the array
+    reservations.splice(reservationIndex, 1);
+    // Save the updated reservations array to localStorage
+    if (isLocalStorageAvailable) {
+        localStorage.setItem("reservations", JSON.stringify(reservations));
+    }
+    // Refresh the displayed reservations
+    displayReservations(reservations);
 }
 
 function buildTable() {
@@ -545,6 +564,12 @@ function addEventListeners() {
     document.addEventListener('custom-reservation-event', (event) => {
         const { borneId, type, proprietaire } = event.detail;
         handleReservation(borneId, type, proprietaire);
+    });
+    
+    // Custom event listener for reservation deletion
+    document.addEventListener('delete-reservation-event', (event) => {
+        const { reservationId } = event.detail;
+        handleReservationDeletion(reservationId);
     });
 
     console.log("Event Listeners added");

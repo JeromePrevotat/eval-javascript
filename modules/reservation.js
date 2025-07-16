@@ -27,6 +27,27 @@
         const durationTd = document.createElement('td');
         durationTd.textContent = this.duree;
         row.appendChild(durationTd);
+        const actionTd = document.createElement('td');
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'btn btn-danger btn-sm reservation-delete-btn';
+        deleteBtn.textContent = 'Supprimer';
+        // Call custom event listener for deletion
+        deleteBtn.addEventListener('click', () => {
+            this.deleteReservationEvent();
+        });
+        actionTd.appendChild(deleteBtn);
+        row.appendChild(actionTd);
         return row;
+    }
+
+    // Custom Event for deletion
+    deleteReservationEvent(){
+        const event = new CustomEvent('delete-reservation-event', {
+            detail: {
+                reservationId: this.id,
+            }
+        });
+        // Dispatch the event to the document so it can be catched by the listener
+        document.dispatchEvent(event);
     }
 }
